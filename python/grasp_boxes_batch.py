@@ -229,6 +229,7 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
                 # print "Lifting"
                 t_i = w_T_h_des_se3[1]
                 t_f = vectorops.add(t_i, (0,0,0)) # previously was (0,0,0.2)
+                #we could reduce the amount of time for each simulation
                 u = np.min((self.sim.getTime() - self.t_0 - t_lift, 1.))
                 send_moving_base_xform_PID(self.sim.controller(0), w_T_h_des_se3[0], vectorops.interpolate(t_i, t_f ,u))
 
