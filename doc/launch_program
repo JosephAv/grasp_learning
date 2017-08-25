@@ -1,0 +1,25 @@
+
+roslaunch vito_description display_soma.launch
+
+
+rosservice call /right_arm/controller_manager/switch_controller "start_controllers: ['teleoperation_controller']
+stop_controllers: ['joint_trajectory_controller', 'stiffness_trajectory_controller', 'damping_trajectory_controller', 'add_torque_trajectory_controller']
+strictness: 2" 
+
+rostopic pub /right_arm/teleoperation_controller/start_controller std_msgs/Bool "data: true"
+
+
+rostopic pub /right_arm/teleoperation_controller/command geometry_msgs/Pose "position:
+  x: -0.8
+  y: 0.0
+  z: 0.2
+orientation:
+  x: 0.5
+  y: 0.0
+  z: 0.0
+  w: 0.5"
+
+  or
+
+  roslaunch grasp_learning comunication_robot.launch
+  

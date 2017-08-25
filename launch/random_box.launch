@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+	<rosparam file="$(find grasp_learning)/param/random_box_generate.yaml" command="load"/>
+
+	<node name="Random_box" pkg="grasp_learning" type="random_box_discrete_" cwd = "node" respawn="false" output="screen"/>
+
+</launch>
