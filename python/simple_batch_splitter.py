@@ -6,8 +6,6 @@ import sys
 
 from plugins import soft_hand
 
-# a simple comment ga from mb
-
 def grasp_boxes(filename):
     subprocess.call(['python', './grasp_boxes_batch.py', filename])
 
