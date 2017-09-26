@@ -40,8 +40,10 @@ def make_box(world, x_dim, y_dim, z_dim, mass=0.5):
     with automatically determined inertia.
         """
     boxgeom = Geometry3D()
-    boxgeom.loadFile("data/objects/cube.tri")
-
+    # boxgeom.loadFile("data/objects/l.tri")
+    # boxgeom.loadFile("data/objects/cube.tri")
+    boxgeom.loadFile("data/objects/pyramid.tri")
+    # boxgeom.loadFile("data/objects/balls.tri")
     # box is centered at the origin
     boxgeom.transform([x_dim, 0, 0, 0, y_dim, 0, 0, 0, z_dim], [-x_dim * 0.5, -y_dim * 0.5, -z_dim * 0.5])
 
@@ -60,7 +62,7 @@ def make_box(world, x_dim, y_dim, z_dim, mass=0.5):
     cparams.kDamping = 30000
     cparams.kRestitution = 0.5
 
-
+    print box
     return box
 
 class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
@@ -90,6 +92,7 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
         if self.world.numRigidObjects() > 0:
             self.obj = self.world.rigidObject(0)
             self.w_T_o = np.array(se3.homogeneous(self.obj.getTransform()))
+            counter = 0;
             for p in poses:
                 if not self.db.has_simulation(self.box_dims, p):
                     self.poses.append(p)
@@ -167,10 +170,11 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
             if len(self.poses) > 0:
                 self.curr_pose = self.poses.pop(0)
 
+                counter =+ 1;
                 print "\n\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                print "Simulating Next Pose Grasp"
+                print "Simulating Next Pose Grasp number ", counter
                 print "Dims:\n", self.box_dims
                 print "Pose:\n", self.curr_pose
                 print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -189,7 +193,6 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
             w_T_h_des_se3 = se3.from_homogeneous(self.w_T_o.dot(self.curr_pose).dot(self.p_T_h))
             self.robot.setConfig(self.q_0)
             set_moving_base_xform(self.robot, w_T_h_des_se3[0], w_T_h_des_se3[1])
-
             if self.sim is None:
                 self.sim = SimpleSimulator(self.world)
                 self.hand = self.module.HandEmulator(self.sim, 0, 6, 6)
@@ -221,7 +224,6 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
             w_T_h_curr_se3 = get_moving_base_xform(self.robot)
             w_T_h_des_se3 = se3.from_homogeneous(self.w_T_o.dot(self.curr_pose).dot(self.p_T_h))
 
-
             if self.sim.getTime() - self.t_0 == 0:
                 # print "Closing hand"
                 self.hand.setCommand([1.0])
@@ -241,8 +243,11 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
                     print "!!!!!!!!!!!!!!!!!!"
                     print "Grasp Unsuccessful"
                     print "!!!!!!!!!!!!!!!!!!"
+            # print "siamo qui"
 
             self.sim.simulate(0.01)
+            # print "siamo qui1"
+
             self.sim.updateWorld()
 
             if not vis.shown() or (self.sim.getTime() - self.t_0) >= 2.5 or self.object_fell:
@@ -396,11 +401,16 @@ def launch_test_mvbb_grasps(robotname, box_db, links_to_check = None):
     for box_dims, poses in box_db.db.items():
         if world.numRigidObjects() > 0:
             world.remove(world.rigidObject(0))
+
+        print "we are here 1"
         obj = make_box(world,
                        box_dims[0],
                        box_dims[1],
                        box_dims[2])
         poses_filtered = []
+
+        print "we are here 2"
+
 
         R,t = obj.getTransform()
         obj.setTransform(R, [0, 0, box_dims[2]/2.])
@@ -433,7 +443,6 @@ def launch_test_mvbb_grasps(robotname, box_db, links_to_check = None):
                                                module,
                                                box_db,
                                                links_to_check)
-
         vis.setPlugin(None)
         vis.setPlugin(program)
         program.reshape(800, 600)
