@@ -41,8 +41,8 @@ def make_box(world, x_dim, y_dim, z_dim, mass=0.5):
         """
     boxgeom = Geometry3D()
     # boxgeom.loadFile("data/objects/l.tri")
-    # boxgeom.loadFile("data/objects/cube.tri")
-    boxgeom.loadFile("data/objects/pyramid.tri")
+    boxgeom.loadFile("data/objects/cube.tri")
+    # boxgeom.loadFile("data/objects/pyramid.tri")
     # boxgeom.loadFile("data/objects/balls.tri")
     # box is centered at the origin
     boxgeom.transform([x_dim, 0, 0, 0, y_dim, 0, 0, 0, z_dim], [-x_dim * 0.5, -y_dim * 0.5, -z_dim * 0.5])
