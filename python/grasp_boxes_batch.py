@@ -33,6 +33,7 @@ from plugins import soft_hand
 
 objects = {}
 robots = ['reflex_col', 'soft_hand', 'reflex']
+counter = 0
 
 def make_box(world, x_dim, y_dim, z_dim, mass=0.5):
     """Makes a new axis-aligned box centered at the origin with
@@ -88,11 +89,11 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
         self.running = True
         self.db = box_db
         self.links_to_check = links_to_check
+        
 
         if self.world.numRigidObjects() > 0:
             self.obj = self.world.rigidObject(0)
             self.w_T_o = np.array(se3.homogeneous(self.obj.getTransform()))
-            counter = 0;
             for p in poses:
                 if not self.db.has_simulation(self.box_dims, p):
                     self.poses.append(p)
@@ -170,7 +171,8 @@ class FilteredMVBBTesterVisualizer(GLRealtimeProgram):
             if len(self.poses) > 0:
                 self.curr_pose = self.poses.pop(0)
 
-                counter =+ 1;
+                global counter
+                counter += 1;
                 print "\n\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -455,6 +457,7 @@ def launch_test_mvbb_grasps(robotname, box_db, links_to_check = None):
 
 if __name__ == '__main__':
     box_db = None
+
     try:
         import os.path
         filename = os.path.splitext(sys.argv[1])[0]
